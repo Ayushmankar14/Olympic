@@ -9,7 +9,8 @@ import plotly.figure_factory as ff
 # Load data with caching and error handling
 @st.cache_data
 def load_data():
-    df = pd.read_csv('athlete_events.csv')
+ pd.read_csv('athlete_events.zip', compression='zip')
+
     region_df = pd.read_csv('noc_regions.csv')
     return preprocessor.preprocess(df, region_df)
 
