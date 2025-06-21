@@ -9,8 +9,7 @@ import plotly.figure_factory as ff
 # Load data with caching and error handling
 @st.cache_data
 def load_data():
- pd.read_csv('athlete_events.zip', compression='zip')
-
+    df = pd.read_csv('athlete_events.zip', compression='zip')
     region_df = pd.read_csv('noc_regions.csv')
     return preprocessor.preprocess(df, region_df)
 
@@ -39,7 +38,6 @@ if user_menu == 'Medal Tally':
 
     medal_tally = helper.fetch_medal_tally(df, selected_year, selected_country)
 
-    # Dynamic title
     if selected_year == 'Overall' and selected_country == 'Overall':
         st.title("🏆 Overall Tally")
     elif selected_year != 'Overall' and selected_country == 'Overall':
@@ -134,7 +132,6 @@ elif user_menu == 'Athlete wise Analysis':
     st.title("🎯 Age Distribution")
     st.plotly_chart(fig)
 
-    # Age by sport
     st.title("🏅 Age Distribution by Sport (Gold Medalists)")
     x, name = [], []
     famous_sports = ['Basketball', 'Judo', 'Football', 'Athletics', 'Swimming', 'Badminton',
@@ -150,17 +147,15 @@ elif user_menu == 'Athlete wise Analysis':
     fig.update_layout(width=1000, height=600)
     st.plotly_chart(fig)
 
-    # Height vs Weight
+    st.title("📊 Height vs Weight by Sport")
     sport_list = sorted(df['Sport'].dropna().unique().tolist())
     sport_list.insert(0, 'Overall')
-    st.title("📊 Height vs Weight by Sport")
     selected_sport = st.selectbox("Select Sport", sport_list)
     temp_df = helper.weight_v_height(df, selected_sport)
     fig, ax = plt.subplots()
     sns.scatterplot(data=temp_df, x="Weight", y="Height", hue="Medal", style="Sex", s=60, ax=ax)
     st.pyplot(fig)
 
-    # Men vs Women over years
     st.title("👨‍🦰 Men vs 👩‍🦰 Women Participation Over the Years")
     gender_df = helper.men_vs_women(df)
     fig = px.line(gender_df, x="Year", y=["Male", "Female"])
